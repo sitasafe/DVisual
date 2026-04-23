@@ -2,10 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   async rewrites() {
+    const backendUrl = process.env.BACKEND_URL || "https://multimodal-saas-api.onrender.com";
     return [
       {
         source: "/api/v1/:path*",
-        destination: "https://multimodal-saas-api.onrender.com/api/v1/:path*",
+        destination: `${backendUrl}/api/v1/:path*`,
       },
     ];
   },
