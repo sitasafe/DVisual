@@ -5,7 +5,7 @@ services:
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile
     plan: free
-    healthCheckPath: /api/v1/health
+    healthCheckPath: /health
     region: ohio
     envVars:
       - key: PORT
