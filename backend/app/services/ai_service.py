@@ -16,9 +16,8 @@ async def ask_question(file_id: str, question: str, context: str = None) -> AskR
     generated_answer = (
         f"Al inspeccionar tu consulta: '{question}'...\n\n"
         f"**Contexto recabado por FAISS RAG**:\n{rag_context[:400]}...\n\n"
-        f"**Respuesta Pedagógica e Inclusiva**:\nCon base en los extractos anteriores, "(
+        f"**Respuesta Pedagógica e Inclusiva**:\nCon base en los extractos anteriores, "
         "la respuesta es positiva. Este es el espacio reservado para la inferencia del LLM."
-        ")"
     )
 
     return AskResponse(

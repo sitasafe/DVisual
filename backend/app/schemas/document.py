@@ -10,6 +10,8 @@ class ProcessResponse(BaseModel):
     file_id: str
     status: str
     content: Optional[str] = None
+    char_count: int = 0
+    analysis_results: list[dict] = []
     
 class AskRequest(BaseModel):
     file_id: str
