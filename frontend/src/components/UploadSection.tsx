@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { FileUp, CheckCircle2, AlertCircle, Loader2, Sparkles, Files } from "lucide-react";
 import { uploadFile, processDocument } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ interface Props {
 }
 
 export default function UploadSection({ onProcessed }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<"idle" | "uploading" | "processing" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -117,10 +118,10 @@ export default function UploadSection({ onProcessed }: Props) {
           </div>
         )}
 
-        <label className="cursor-pointer block">
-          <input type="file" className="hidden" onChange={handleFileChange} accept=".pdf,image/*" />
+        <div className="block w-full">
+          <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} accept=".pdf,image/*" />
           <button
-            onClick={status === "idle" ? handleUpload : undefined}
+            onClick={status === "idle" ? (!file ? () => fileInputRef.current?.click() : handleUpload) : undefined}
             disabled={status === "uploading" || status === "processing"}
             className={cn(
               "w-full py-4 px-6 rounded-2xl font-bold text-sm tracking-widest transition-all duration-300 relative overflow-hidden group/btn",
@@ -128,13 +129,13 @@ export default function UploadSection({ onProcessed }: Props) {
             )}
           >
             <span className="relative z-10 uppercase">
-              {status === "idle" ? "Analizar Ahora" : status === "uploading" ? "Subiendo..." : status === "processing" ? "Pensando..." : "Listo"}
+              {status === "idle" ? (!file ? "Seleccionar Archivo" : "Analizar Ahora") : status === "uploading" ? "Subiendo..." : status === "processing" ? "Pensando..." : "Listo"}
             </span>
             {status === "idle" && (
               <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
             )}
           </button>
-        </label>
+        </div>
       </div>
 
       <div aria-live="polite" className="h-6">
