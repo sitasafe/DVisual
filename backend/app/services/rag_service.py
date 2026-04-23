@@ -3,7 +3,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from app.core.logger import logger
 
-embedding_model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 dimension = embedding_model.get_sentence_embedding_dimension()
 
 class DocumentRAG:
