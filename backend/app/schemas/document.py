@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class ProcessRequest(BaseModel):
@@ -11,7 +11,7 @@ class ProcessResponse(BaseModel):
     status: str
     content: Optional[str] = None
     char_count: int = 0
-    analysis_results: list[dict] = []
+    analysis_results: list[dict] = Field(default_factory=list)
     
 class AskRequest(BaseModel):
     file_id: str

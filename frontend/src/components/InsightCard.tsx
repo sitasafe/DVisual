@@ -35,10 +35,11 @@ export default function InsightCard({ title, image, explanation, insight, type, 
       {/* Visual Header */}
       <div className="relative h-48 lg:h-56 overflow-hidden rounded-t-2xl bg-black/40">
         {image ? (
-          <img 
+          <Image 
             src={`data:image/png;base64,${image}`} 
             alt={title || "Imagen detectada por IA"} 
-            className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
+            fill
+            className="object-contain p-4 transition-transform duration-700 group-hover:scale-110"
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-600 gap-2">
