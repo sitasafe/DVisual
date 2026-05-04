@@ -60,13 +60,38 @@ export default function UploadSection({ onProcessed }: Props) {
     setErrorMsg("");
     
     try {
-      // 1. Warm up the backend (Render cold start)
-      try {
-        const backendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-        // Call health endpoint directly without the wrapper to avoid throwing immediately
-        await fetch(`${backendUrl}/health`, { method: "GET" }).catch(() => {});
-      } catch (e) {
-        // Ignore warm-up errors
+      // 1. Warm up the backend (Render cold start handling)
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      let isAwake = false;
+      let attempts = 0;
+      
+      while (!isAwake && attempts < 12) { // Allow up to ~60s for Render to wake up
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout to avoid Vercel 10s hard kill
+          
+          const res = await fetch(`${backendUrl}/health`, { 
+            method: "GET",
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (res.ok) {
+            isAwake = true;
+            break;
+          }
+        } catch (e) {
+          // Ignore timeout or network errors during warmup
+        }
+        
+        // Wait 3 seconds before next attempt
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        attempts++;
+      }
+
+      if (!isAwake) {
+        throw new Error("504"); // Force timeout error if it never wakes up
       }
 
       // 2. Upload file
@@ -81,10 +106,9 @@ export default function UploadSection({ onProcessed }: Props) {
       onProcessed(fileId, processRes.char_count || 0, processRes.analysis_results || []);
     } catch (error: any) {
       setStatus("error");
-      // Add more descriptive error for 502/504
       const errMsg = error.message || "Error en el pipeline de IA.";
       if (errMsg.includes("502") || errMsg.includes("504")) {
-        setErrorMsg("Error (502/504): El servidor IA de Render se está encendiendo o se quedó sin memoria. Por favor, intenta subir el archivo de nuevo.");
+        setErrorMsg("Error (502/504): El servidor tardó demasiado en despertar. Por favor, intenta subir el archivo de nuevo ahora.");
       } else {
         setErrorMsg(errMsg);
       }
