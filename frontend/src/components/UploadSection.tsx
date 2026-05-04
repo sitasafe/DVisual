@@ -60,9 +60,27 @@ export default function UploadSection({ onProcessed }: Props) {
     setErrorMsg("");
     
     try {
-      // Intentamos despertar al servidor de Render si está dormido
+      // 0. Despertar al servidor en Render (Bypass del límite de 10s de Vercel)
       const directRenderUrl = "https://multimodal-saas-api.onrender.com/health";
-      fetch(directRenderUrl).catch(() => {}); // Fire and forget
+      let isAwake = false;
+      
+      // Hacemos pings directos a Render durante 90 segundos
+      for (let i = 0; i < 20; i++) {
+        try {
+          const res = await fetch(directRenderUrl, { method: "GET" });
+          if (res.ok) {
+            isAwake = true;
+            break;
+          }
+        } catch (e) {
+          // Ignoramos errores de red mientras arranca
+        }
+        await new Promise(r => setTimeout(r, 4500)); // Esperar 4.5 segundos
+      }
+
+      if (!isAwake) {
+        throw new Error("El motor de Inteligencia Artificial en Render no logró iniciar. Puede que el servidor gratuito esté sin memoria (OOM).");
+      }
       
       // 1. Subir archivo a la API Real
       const uploadRes = await uploadFile(file);
@@ -78,7 +96,7 @@ export default function UploadSection({ onProcessed }: Props) {
       setStatus("error");
       const errMsg = error.message || "Error en el pipeline de IA.";
       if (errMsg.includes("502") || errMsg.includes("504") || errMsg.includes("Failed to fetch")) {
-        setErrorMsg("Error: El servidor de IA (Backend) está apagado o tardó demasiado en responder.");
+        setErrorMsg("Vercel Timeout (504): El archivo es muy grande o el motor RAG tardó más de 10 segundos en procesar el documento.");
       } else {
         setErrorMsg(errMsg);
       }
