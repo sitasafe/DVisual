@@ -8,6 +8,4 @@ Pillow>=10.0.1
 aiofiles>=23.2.1
 pytesseract>=0.3.10
 opencv-python-headless>=4.8.1.78
-faiss-cpu>=1.7.4
-sentence-transformers>=2.2.2
 numpy>=1.26.0

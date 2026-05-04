@@ -12,6 +12,7 @@
 - Performing code static analysis to detect UI warnings and Pydantic deprecations.
 - Fixing ESLint constraints and Python memory reference risks.
 - Validating the Antigravity Security Protocol.
+- **Auto-healed [502 Bad Gateway]:** Resolved memory crashes (OOM) on Render free tier by limiting PDF image extraction to max 3 images and resizing to 1200px. Added frontend warmup requests to prevent Vercel 10s timeouts.
 - **Status:** Verified & Polished
 
 ## 🤖 Squad Status
@@ -20,4 +21,5 @@
 | Design Lead | Visual UI Audit | ✅ Completed |
 | Builder | Backend Type & Logic Audit | ✅ Completed |
 | Security | Security Sanity Check | ✅ Completed |
+| DevOps | OOM & Cold Start Fixes | ✅ Completed |
 | DevOps | Final Deployment Prep | ⏳ Pending |

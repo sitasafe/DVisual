@@ -60,9 +60,20 @@ export default function UploadSection({ onProcessed }: Props) {
     setErrorMsg("");
     
     try {
+      // 1. Warm up the backend (Render cold start)
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+        // Call health endpoint directly without the wrapper to avoid throwing immediately
+        await fetch(`${backendUrl}/health`, { method: "GET" }).catch(() => {});
+      } catch (e) {
+        // Ignore warm-up errors
+      }
+
+      // 2. Upload file
       const uploadRes = await uploadFile(file);
       const fileId = uploadRes.data.file_id;
       
+      // 3. Process file
       setStatus("processing");
       const processRes = await processDocument(fileId, true, true);
       
@@ -70,7 +81,13 @@ export default function UploadSection({ onProcessed }: Props) {
       onProcessed(fileId, processRes.char_count || 0, processRes.analysis_results || []);
     } catch (error: any) {
       setStatus("error");
-      setErrorMsg(error.message || "Error en el pipeline de IA.");
+      // Add more descriptive error for 502/504
+      const errMsg = error.message || "Error en el pipeline de IA.";
+      if (errMsg.includes("502") || errMsg.includes("504")) {
+        setErrorMsg("Error (502/504): El servidor IA de Render se está encendiendo o se quedó sin memoria. Por favor, intenta subir el archivo de nuevo.");
+      } else {
+        setErrorMsg(errMsg);
+      }
     }
   };
 

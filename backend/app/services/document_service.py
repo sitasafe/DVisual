@@ -43,7 +43,10 @@ async def process_document(file_id: str, extract_text: bool, analyze_images: boo
                 analysis_results.append(analysis)
                 
     elif file_path.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
-        img = Image.open(file_path)
+        img = Image.open(file_path).convert("RGB")
+        if img.width > 1200 or img.height > 1200:
+            img.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
+            
         if extract_text:
             parsed_text = extract_text_from_image(img)
         if analyze_images:
