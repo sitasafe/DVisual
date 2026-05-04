@@ -60,33 +60,32 @@ export default function UploadSection({ onProcessed }: Props) {
     setErrorMsg("");
     
     try {
-      // 1. Warm up the backend (Render cold start handling)
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      // 1. Warm up the backend (Direct Render Wakeup bypasses Vercel 10s proxy limit)
       let isAwake = false;
       let attempts = 0;
       
-      while (!isAwake && attempts < 12) { // Allow up to ~60s for Render to wake up
+      // Ping the render URL directly to force wake-up (no proxy timeout)
+      const directRenderUrl = "https://multimodal-saas-api.onrender.com/health";
+      const proxyUrl = (process.env.NEXT_PUBLIC_API_URL || "/api/v1") + "/health";
+      
+      while (!isAwake && attempts < 15) { // Allow up to ~90s for Render to wake up
         try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout to avoid Vercel 10s hard kill
+          // Use direct URL if we are relying on Render, otherwise use proxy
+          const targetUrl = attempts % 2 === 0 ? directRenderUrl : proxyUrl;
           
-          const res = await fetch(`${backendUrl}/health`, { 
+          const res = await fetch(targetUrl, { 
             method: "GET",
-            signal: controller.signal
           });
-          
-          clearTimeout(timeoutId);
           
           if (res.ok) {
             isAwake = true;
             break;
           }
         } catch (e) {
-          // Ignore timeout or network errors during warmup
+          // Ignore network errors during warmup
         }
         
-        // Wait 3 seconds before next attempt
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5s between attempts
         attempts++;
       }
 
@@ -108,7 +107,7 @@ export default function UploadSection({ onProcessed }: Props) {
       setStatus("error");
       const errMsg = error.message || "Error en el pipeline de IA.";
       if (errMsg.includes("502") || errMsg.includes("504")) {
-        setErrorMsg("Error (502/504): El servidor tardó demasiado en despertar. Por favor, intenta subir el archivo de nuevo ahora.");
+        setErrorMsg("Error (502/504): El servidor de IA en Render está suspendido o colapsó. Verifica que el despliegue en Render se haya completado correctamente.");
       } else {
         setErrorMsg(errMsg);
       }
