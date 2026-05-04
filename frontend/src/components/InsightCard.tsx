@@ -36,9 +36,10 @@ export default function InsightCard({ title, image, explanation, insight, type, 
       <div className="relative h-48 lg:h-56 overflow-hidden rounded-t-2xl bg-black/40">
         {image ? (
           <Image 
-            src={`data:image/png;base64,${image}`} 
+            src={image.startsWith('http') || image.startsWith('data:') ? image : `data:image/png;base64,${image}`} 
             alt={title || "Imagen detectada por IA"} 
             fill
+            unoptimized
             className="object-contain p-4 transition-transform duration-700 group-hover:scale-110"
           />
         ) : (

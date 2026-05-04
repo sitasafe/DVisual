@@ -73,7 +73,7 @@ export default function UploadSection({ onProcessed }: Props) {
             tipo_grafico: "Resumen Ejecutivo RAG",
             insight: "Indexación semántica completada exitosamente",
             explicacion_pedagogica: "El proyecto VISION-AI consiste en el desarrollo de un sistema inteligente basado en inteligencia artificial multimodal y arquitectura RAG diseñado para la interpretación semántica de gráficos y tablas en documentos científicos digitales. Su propósito fundamental es fortalecer la autonomía investigativa de los estudiantes de posgrado con discapacidad visual en la Universidad Nacional de Loja, resolviendo la brecha de \"exclusión cognitiva\" que ocurre cuando los lectores de pantalla tradicionales no logran decodificar la lógica de datos visuales complejos. A través del uso de visión computacional y procesamiento de lenguaje natural, la plataforma transforma datos visuales no estructurados en narrativas semánticas auditivas, permitiendo que el investigador analice tendencias y correlaciones de forma independiente. Con esta intervención, el proyecto aspira a garantizar la equidad en el acceso a la información científica, reducir el tiempo de consulta bibliográfica en un 50% y mejorar las tasas de titulación en este grupo focal.",
-            image_base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+            image_base64: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
           }
         ]);
       }, 2500); // Simular 2.5 segundos de "pensamiento" de la IA
@@ -157,7 +157,7 @@ export default function UploadSection({ onProcessed }: Props) {
                       tipo_grafico: "Gráfico de Barras",
                       insight: "Crecimiento proyectado del 45% en 2026",
                       explicacion_pedagogica: "Este gráfico muestra cómo han subido las ventas. Imagina una escalera donde cada peldaño es más alto que el anterior.",
-                      image_base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+                      image_base64: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
                     }
                   ]);
                 }, 1500);
