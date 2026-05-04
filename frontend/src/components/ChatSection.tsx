@@ -41,10 +41,13 @@ export default function ChatSection({ fileId }: { fileId: string }) {
     setIsLoading(true);
 
     try {
-      if (fileId === "demo-file-123") {
-        // Respuesta simulada para la demo
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setMessages((prev) => [...prev, { role: "assistant", content: "Esta es una respuesta simulada de demostración. En el modo real, aquí verías la respuesta procesada por el modelo RAG analizando tu documento." }]);
+      if (fileId.startsWith("demo-file-")) {
+        // Respuesta simulada para la demo o archivos simulados
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setMessages((prev) => [...prev, { 
+          role: "assistant", 
+          content: "Entendido. Esta es una respuesta simulada de demostración generada para tu archivo. En el modo de producción con el backend activo, aquí recibirías la explicación extraída directamente del modelo RAG." 
+        }]);
       } else {
         const data = await askQuestion(fileId, userMsg);
         setMessages((prev) => [...prev, { role: "assistant", content: data.answer }]);
