@@ -59,28 +59,29 @@ export default function UploadSection({ onProcessed }: Props) {
     setStatus("uploading");
     setErrorMsg("");
     
-    // Modo Funcional / Demo Activo:
-    // Saltamos el servidor real para evitar que se quede cargando infinitamente y aseguramos que funcione.
     try {
-      setTimeout(() => {
-        setStatus("processing");
-      }, 500);
-
-      setTimeout(() => {
-        setStatus("done");
-        onProcessed(`demo-file-${file.name}`, 34500, [
-          {
-            tipo_grafico: "Resumen Ejecutivo RAG",
-            insight: "Indexación semántica completada exitosamente",
-            explicacion_pedagogica: "El proyecto VISION-AI consiste en el desarrollo de un sistema inteligente basado en inteligencia artificial multimodal y arquitectura RAG diseñado para la interpretación semántica de gráficos y tablas en documentos científicos digitales. Su propósito fundamental es fortalecer la autonomía investigativa de los estudiantes de posgrado con discapacidad visual en la Universidad Nacional de Loja, resolviendo la brecha de \"exclusión cognitiva\" que ocurre cuando los lectores de pantalla tradicionales no logran decodificar la lógica de datos visuales complejos. A través del uso de visión computacional y procesamiento de lenguaje natural, la plataforma transforma datos visuales no estructurados en narrativas semánticas auditivas, permitiendo que el investigador analice tendencias y correlaciones de forma independiente. Con esta intervención, el proyecto aspira a garantizar la equidad en el acceso a la información científica, reducir el tiempo de consulta bibliográfica en un 50% y mejorar las tasas de titulación en este grupo focal.",
-            image_base64: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
-          }
-        ]);
-      }, 2500); // Simular 2.5 segundos de "pensamiento" de la IA
+      // Intentamos despertar al servidor de Render si está dormido
+      const directRenderUrl = "https://multimodal-saas-api.onrender.com/health";
+      fetch(directRenderUrl).catch(() => {}); // Fire and forget
       
+      // 1. Subir archivo a la API Real
+      const uploadRes = await uploadFile(file);
+      const fileId = uploadRes.data.file_id;
+      
+      // 2. Procesar documento con IA Real
+      setStatus("processing");
+      const processRes = await processDocument(fileId, true, true);
+      
+      setStatus("done");
+      onProcessed(fileId, processRes.char_count || 0, processRes.analysis_results || []);
     } catch (error: any) {
       setStatus("error");
-      setErrorMsg("Error en el pipeline de IA.");
+      const errMsg = error.message || "Error en el pipeline de IA.";
+      if (errMsg.includes("502") || errMsg.includes("504") || errMsg.includes("Failed to fetch")) {
+        setErrorMsg("Error: El servidor de IA (Backend) está apagado o tardó demasiado en responder.");
+      } else {
+        setErrorMsg(errMsg);
+      }
     }
   };
 

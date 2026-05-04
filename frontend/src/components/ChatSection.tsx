@@ -21,15 +21,7 @@ export default function ChatSection({ fileId }: { fileId: string }) {
     }
   }, [messages]);
 
-  // Mostrar mensaje introductorio automáticamente al cargar un archivo
-  useEffect(() => {
-    if (fileId && messages.length === 0) {
-      setMessages([{
-        role: "assistant",
-        content: "El proyecto VISION-AI consiste en el desarrollo de un sistema inteligente basado en inteligencia artificial multimodal y arquitectura RAG diseñado para la interpretación semántica de gráficos y tablas en documentos científicos digitales. Su propósito fundamental es fortalecer la autonomía investigativa de los estudiantes de posgrado con discapacidad visual en la Universidad Nacional de Loja, resolviendo la brecha de \"exclusión cognitiva\" que ocurre cuando los lectores de pantalla tradicionales no logran decodificar la lógica de datos visuales complejos. A través del uso de visión computacional y procesamiento de lenguaje natural, la plataforma transforma datos visuales no estructurados en narrativas semánticas auditivas, permitiendo que el investigador analice tendencias y correlaciones de forma independiente. Con esta intervención, el proyecto aspira a garantizar la equidad en el acceso a la información científica, reducir el tiempo de consulta bibliográfica en un 50% y mejorar las tasas de titulación en este grupo focal."
-      }]);
-    }
-  }, [fileId]);
+
 
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
