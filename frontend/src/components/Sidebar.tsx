@@ -23,6 +23,9 @@ export default function Sidebar() {
         {menuItems.map((item) => (
           <button
             key={item.label}
+            onClick={() => {
+              if (!item.active) alert(`Módulo "${item.label}" se encuentra en fase de desarrollo.`);
+            }}
             className={cn(
               "w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5",
               item.active && "bg-white/10 text-neon-blue border border-white/10"
@@ -36,11 +39,17 @@ export default function Sidebar() {
       </nav>
 
       <div className="mt-auto pt-4 border-t border-white/10 space-y-2">
-        <button className="w-full flex items-center gap-4 p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+        <button 
+          onClick={() => alert('Módulo "Configuración" estará disponible en la próxima versión.')}
+          className="w-full flex items-center gap-4 p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+        >
           <Settings className="w-6 h-6" />
           <span className="font-medium hidden lg:block">Configuración</span>
         </button>
-        <button className="w-full flex items-center gap-4 p-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-400/5 transition-all">
+        <button 
+          onClick={() => alert('Sesión cerrada de forma segura.')}
+          className="w-full flex items-center gap-4 p-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-400/5 transition-all"
+        >
           <LogOut className="w-6 h-6" />
           <span className="font-medium hidden lg:block">Cerrar Sesión</span>
         </button>

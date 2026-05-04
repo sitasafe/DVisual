@@ -175,6 +175,28 @@ export default function UploadSection({ onProcessed }: Props) {
               <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
             )}
           </button>
+          
+          {status === "idle" && !file && (
+            <button
+              onClick={() => {
+                setStatus("processing");
+                setTimeout(() => {
+                  setStatus("done");
+                  onProcessed("demo-file-123", 14520, [
+                    {
+                      tipo_grafico: "Gráfico de Barras",
+                      insight: "Crecimiento proyectado del 45% en 2026",
+                      explicacion_pedagogica: "Este gráfico muestra cómo han subido las ventas. Imagina una escalera donde cada peldaño es más alto que el anterior.",
+                      image_base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+                    }
+                  ]);
+                }, 1500);
+              }}
+              className="w-full mt-3 py-3 px-6 rounded-2xl font-bold text-xs tracking-widest transition-all duration-300 border border-neon-blue/30 text-neon-blue hover:bg-neon-blue/10 active:scale-95 uppercase"
+            >
+              Cargar Prueba Rápida (Demo)
+            </button>
+          )}
         </div>
       </div>
 

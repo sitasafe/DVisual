@@ -31,8 +31,14 @@ export default function ChatSection({ fileId }: { fileId: string }) {
     setIsLoading(true);
 
     try {
-      const data = await askQuestion(fileId, userMsg);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.answer }]);
+      if (fileId === "demo-file-123") {
+        // Respuesta simulada para la demo
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setMessages((prev) => [...prev, { role: "assistant", content: "Esta es una respuesta simulada de demostración. En el modo real, aquí verías la respuesta procesada por el modelo RAG analizando tu documento." }]);
+      } else {
+        const data = await askQuestion(fileId, userMsg);
+        setMessages((prev) => [...prev, { role: "assistant", content: data.answer }]);
+      }
     } catch (error) {
       setMessages((prev) => [...prev, { role: "assistant", content: "Error: No pude obtener respuesta de la IA." }]);
     } finally {
