@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+// Apuntar directamente al servidor en la nube para saltarse el bloqueo de Vercel de 10 segundos
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://multimodal-saas-api.onrender.com/api/v1";
 
 async function fetchWithErrorHandling(url: string, options: RequestInit) {
   try {
