@@ -2,14 +2,19 @@
 import { LayoutDashboard, FileUp, History, Accessibility, Settings, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: FileUp, label: "Cargar Documento", active: false },
-  { icon: History, label: "Historial", active: false },
-  { icon: Accessibility, label: "Accesibilidad", active: false },
-];
+interface SidebarProps {
+  activeView: string;
+  setActiveView: (view: string) => void;
+}
 
-export default function Sidebar() {
+export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
+  const menuItems = [
+    { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
+    { icon: FileUp, label: "Cargar Documento", id: "dashboard" },
+    { icon: History, label: "Historial", id: "historial" },
+    { icon: Accessibility, label: "Accesibilidad", id: "accesibilidad" },
+  ];
+
   return (
     <aside className="w-20 lg:w-64 h-screen glass border-r border-white/10 flex flex-col p-4 transition-all duration-300">
       <div className="flex items-center gap-3 mb-10 px-2">
@@ -20,30 +25,34 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 space-y-2">
-        {menuItems.map((item) => (
-          <button
-            key={item.label}
-            onClick={() => {
-              if (!item.active) alert(`Módulo "${item.label}" se encuentra en fase de desarrollo.`);
-            }}
-            className={cn(
-              "w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5",
-              item.active && "bg-white/10 text-neon-blue border border-white/10"
-            )}
-            title={item.label}
-          >
-            <item.icon className={cn("w-6 h-6", item.active && "text-neon-blue")} />
-            <span className="font-medium hidden lg:block">{item.label}</span>
-          </button>
-        ))}
+        {menuItems.map((item) => {
+          const isActive = activeView === item.id || (item.label === "Cargar Documento" && activeView === "dashboard");
+          return (
+            <button
+              key={item.label}
+              onClick={() => setActiveView(item.id)}
+              className={cn(
+                "w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5",
+                isActive && "bg-white/10 text-neon-blue border border-white/10"
+              )}
+              title={item.label}
+            >
+              <item.icon className={cn("w-6 h-6", isActive && "text-neon-blue")} />
+              <span className="font-medium hidden lg:block">{item.label}</span>
+            </button>
+          );
+        })}
       </nav>
 
       <div className="mt-auto pt-4 border-t border-white/10 space-y-2">
         <button 
-          onClick={() => alert('Módulo "Configuración" estará disponible en la próxima versión.')}
-          className="w-full flex items-center gap-4 p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+          onClick={() => setActiveView("configuracion")}
+          className={cn(
+            "w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5",
+            activeView === "configuracion" && "bg-white/10 text-neon-blue border border-white/10"
+          )}
         >
-          <Settings className="w-6 h-6" />
+          <Settings className={cn("w-6 h-6", activeView === "configuracion" && "text-neon-blue")} />
           <span className="font-medium hidden lg:block">Configuración</span>
         </button>
         <button 
